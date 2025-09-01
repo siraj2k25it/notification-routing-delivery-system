@@ -1,0 +1,98 @@
+server:
+  port: 8080
+  shutdown: graceful
+
+spring:
+  application:
+    name: notification-routing-delivery-system
+  
+  profiles:
+    active: local
+  
+  # H2 Database (for development)
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password: password
+    driver-class-name: org.h2.Driver
+  
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  
+  # JPA Configuration
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+  
+  # Async configuration
+  task:
+    execution:
+      pool:
+        core-size: 10
+        max-size: 50
+        queue-capacity: 100
+        keep-alive: 60s
+      thread-name-prefix: notification-async-
+
+# Notification service configuration
+notification:
+  retry:
+    max-attempts: 3
+    base-delay-seconds: 2
+    max-delay-seconds: 300
+  
+  channels:
+    email:
+      enabled: true
+      timeout-seconds: 30
+    sms:
+      enabled: true
+      timeout-seconds: 15
+    push:
+      enabled: true
+      timeout-seconds: 10
+    webhook:
+      enabled: true
+      timeout-seconds: 60
+
+# Logging configuration
+logging:
+  level:
+    com.notificationservice: INFO
+    org.springframework: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+  file:
+    name: logs/notification-service.log
+
+# Management endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+
+# OpenAPI Documentation
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+  info:
+    title: Notification Routing & Delivery System
+    description: A robust notification system with multi-channel support
+    version: 1.0.0
+    contact:
+      name: Siraj Shaik
+      url: https://github.com/siraj2k25it/notification-routing-delivery-system
