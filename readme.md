@@ -395,7 +395,7 @@ The system comes with pre-configured routing rules:
 
 1. **User Registration**: Email + SMS
 2. **Payment Completed**: Email + SMS
-3. **High Priority Events**: SMS + Email (priority-based)
+3. **High Priority Events**: Push + SMS + Email (priority-based)
 4. **Security Alerts**: Email + SMS
 5. **Password Reset**: Email only
 6. **Account Verification**: Email + SMS

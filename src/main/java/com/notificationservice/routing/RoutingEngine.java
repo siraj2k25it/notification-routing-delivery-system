@@ -54,9 +54,9 @@ public class RoutingEngine {
                 "Your order #{orderId} has shipped!"
         ));
 
-        // High priority rules - Urgent notifications
+        // High priority rules - Urgent notifications with push for immediate attention
         rules.add(RoutingRule.forHighPriority(
-                List.of(NotificationChannel.SMS, NotificationChannel.EMAIL),
+                List.of(NotificationChannel.PUSH, NotificationChannel.SMS, NotificationChannel.EMAIL),
                 "🚨 URGENT: {message} - Please take immediate action.",
                 "🚨 Urgent Notification"
         ));

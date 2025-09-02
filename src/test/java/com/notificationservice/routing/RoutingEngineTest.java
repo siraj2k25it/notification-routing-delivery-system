@@ -97,7 +97,7 @@ class RoutingEngineTest {
 
     @Test
     void testRouteEvent_HighPriority() {
-        // Given
+        // Given - HIGH priority event should route to PUSH + SMS + EMAIL
         Event event = new Event("event-id", "CRITICAL_ALERT", 
                 Map.of("message", "System overload detected"), 
                 "admin@example.com", LocalDateTime.now(), Event.Priority.HIGH);
@@ -108,6 +108,19 @@ class RoutingEngineTest {
         // Then
         assertNotNull(requests);
         assertFalse(requests.isEmpty());
+        assertTrue(requests.size() >= 3, "HIGH priority should route to PUSH + SMS + EMAIL");
+        
+        // Verify PUSH notification is included for high priority
+        boolean hasPush = requests.stream()
+                .anyMatch(r -> r.channel() == NotificationChannel.PUSH);
+        boolean hasSms = requests.stream()
+                .anyMatch(r -> r.channel() == NotificationChannel.SMS);
+        boolean hasEmail = requests.stream()
+                .anyMatch(r -> r.channel() == NotificationChannel.EMAIL);
+        
+        assertTrue(hasPush, "HIGH priority should include PUSH notification");
+        assertTrue(hasSms, "HIGH priority should include SMS notification");
+        assertTrue(hasEmail, "HIGH priority should include EMAIL notification");
         
         NotificationRequest request = requests.get(0);
         assertTrue(request.message().contains("🚨 URGENT"));
