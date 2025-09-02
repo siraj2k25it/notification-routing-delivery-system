@@ -115,13 +115,13 @@ mvnw.cmd clean package
 **Windows:**
 ```cmd
 # Unit tests
-mvnw.cmd test
+mvn test
 
 # Integration tests
-mvnw.cmd test -Dtest=*IntegrationTest
+mvn test -Dtest=*IntegrationTest
 
 # Test coverage report
-mvnw.cmd test jacoco:report
+mvn test jacoco:report
 ```
 
 ### 4. Start the Application
@@ -135,7 +135,7 @@ mvnw.cmd test jacoco:report
 
 **Windows:**
 ```cmd
-mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=local
+mvn spring-boot:run -Dspring-boot.run.profiles=local
 ```
 
 **Option B: Using JAR**
