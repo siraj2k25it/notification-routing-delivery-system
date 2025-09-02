@@ -269,7 +269,7 @@ curl http://localhost:8080/actuator/prometheus
 
 ## 🌐 Alternative Testing Methods
 
-### 1. Swagger UI (Easiest)
+### 1. Swagger UI
 1. Open browser → `http://localhost:8080/swagger-ui.html`
 2. Find **Event Management** → **POST /api/v1/events**
 3. Click **"Try it out"**
