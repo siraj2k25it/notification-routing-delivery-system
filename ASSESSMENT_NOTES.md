@@ -86,7 +86,7 @@ curl -X POST http://localhost:8080/api/v1/events \
 
 ### Run Tests
 ```bash
-# All unit tests (guaranteed to pass)
+# All unit tests
 mvn test -Dtest="!*IntegrationTest"
 
 # Specific test for demonstration
