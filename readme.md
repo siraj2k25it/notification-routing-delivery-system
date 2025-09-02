@@ -1,6 +1,8 @@
 # Notification Routing & Delivery System
 
-A robust, scalable backend service for routing and delivering notifications across multiple channels (Email, SMS, Push, Webhook) based on configurable rules. Built with **Java 21** and **Spring Boot 3.x** for modern performance and maintainability.
+Hi! This is my implementation of a notification service for the MultiBank assessment. I've built a scalable backend that handles notification routing and delivery across multiple channels (Email, SMS, Push, Webhook) with configurable business rules. 
+
+I chose **Java 21** and **Spring Boot 3.3** because I wanted to showcase my knowledge of the latest Java features and Spring ecosystem.
 
 ## 🚀 Features
 
@@ -43,15 +45,15 @@ A robust, scalable backend service for routing and delivering notifications acro
 ## 🛠️ Technologies Used
 
 - **Java 21** (LTS) with modern features:
-  - Records for immutable data classes
-  - Pattern matching and switch expressions
-  - Virtual threads for improved concurrency
-  - Text blocks and string templates
+    - Records for immutable data classes
+    - Pattern matching and switch expressions
+    - Virtual threads for improved concurrency
+    - Text blocks and string templates
 - **Spring Boot 3.3.x** with:
-  - Spring Web for REST APIs
-  - Spring Boot Actuator for monitoring
-  - Spring Data JPA for persistence
-  - Spring Cache for performance
+    - Spring Web for REST APIs
+    - Spring Boot Actuator for monitoring
+    - Spring Data JPA for persistence
+    - Spring Cache for performance
 - **Maven** for dependency management
 - **Jackson** for JSON processing
 - **JUnit 5** with modern testing features
@@ -72,43 +74,73 @@ A robust, scalable backend service for routing and delivering notifications acro
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/notification-routing-system.git
-cd notification-routing-system
+git clone https://github.com/siraj2k25it/notification-routing-delivery-system.git
+cd notification-routing-delivery-system
 ```
 
 ### 2. Build the Project
 
+**Linux/Mac:**
 ```bash
 # Clean and compile
-mvn clean compile
+./mvnw clean compile
 
 # Package (includes tests)
-mvn clean package
+./mvnw clean package
+```
+
+**Windows:**
+```cmd
+# Clean and compile
+mvnw.cmd clean compile
+
+# Package (includes tests)
+mvnw.cmd clean package
 ```
 
 ### 3. Run Tests
 
+**Linux/Mac:**
 ```bash
 # Unit tests
-mvn test
+./mvnw test
 
 # Integration tests
-mvn test -Dtest=*IntegrationTest
+./mvnw test -Dtest=*IntegrationTest
 
 # Test coverage report
-mvn test jacoco:report
+./mvnw test jacoco:report
+```
+
+**Windows:**
+```cmd
+# Unit tests
+mvnw.cmd test
+
+# Integration tests
+mvnw.cmd test -Dtest=*IntegrationTest
+
+# Test coverage report
+mvnw.cmd test jacoco:report
 ```
 
 ### 4. Start the Application
 
 **Option A: Using Maven (Development)**
+
+**Linux/Mac:**
 ```bash
-mvn spring-boot:run -Dspring-boot.run.profiles=local
+./mvnw spring-boot:run -Dspring-boot.run.profiles=local
+```
+
+**Windows:**
+```cmd
+mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=local
 ```
 
 **Option B: Using JAR**
 ```bash
-java -jar target/notification-routing-system-1.0.0.jar
+java -jar target/notification-routing-delivery-system-1.0.0.jar
 ```
 
 **Option C: Using Docker Compose (Recommended)**
@@ -131,20 +163,72 @@ Once running, visit:
 
 ## 📖 API Usage
 
+### Basic Health Check
+
+**Linux/Mac/Windows:**
+```bash
+curl http://localhost:8080/api/v1/health
+```
+
 ### Send an Event
 
+**Linux/Mac:**
 ```bash
 curl -X POST http://localhost:8080/api/v1/events \
   -H "Content-Type: application/json" \
   -d '{
     "eventType": "USER_REGISTERED",
-    "recipient": "user@example.com",
+    "recipient": "siraj.shaik@gmail.com",
     "payload": {
-      "name": "John Doe",
-      "email": "user@example.com"
+      "name": "Siraj Shaik",
+      "email": "siraj.shaik@gmail.com",
+      "company": "MultiBank"
     },
     "priority": "MEDIUM"
   }'
+```
+
+**Windows Command Prompt:**
+```cmd
+curl -X POST http://localhost:8080/api/v1/events -H "Content-Type: application/json" -d "{\"eventType\":\"USER_REGISTERED\",\"recipient\":\"siraj.shaik@gmail.com\",\"payload\":{\"name\":\"Siraj Shaik\",\"email\":\"siraj.shaik@gmail.com\",\"company\":\"MultiBank\"},\"priority\":\"MEDIUM\"}"
+```
+
+**Windows PowerShell:**
+```powershell
+Invoke-RestMethod -Uri "http://localhost:8080/api/v1/events" -Method Post -ContentType "application/json" -Body @"
+{
+  "eventType": "USER_REGISTERED",
+  "recipient": "siraj.shaik@gmail.com",
+  "payload": {
+    "name": "Siraj Shaik",
+    "email": "siraj.shaik@gmail.com",
+    "company": "MultiBank"
+  },
+  "priority": "MEDIUM"
+}
+"@
+```
+
+**Using JSON File (All Platforms):**
+
+1. Create `event.json`:
+```json
+{
+  "eventType": "USER_REGISTERED",
+  "recipient": "siraj.shaik@gmail.com",
+  "payload": {
+    "name": "Siraj Shaik",
+    "email": "siraj.shaik@gmail.com",
+    "company": "MultiBank",
+    "phone": "+971-50-789-4567"
+  },
+  "priority": "MEDIUM"
+}
+```
+
+2. Send the request:
+```bash
+curl -X POST http://localhost:8080/api/v1/events -H "Content-Type: application/json" -d @event.json
 ```
 
 ### Check Delivery Status
@@ -162,6 +246,18 @@ curl http://localhost:8080/api/v1/status/failed
 ### System Health Check
 
 ```bash
+curl http://localhost:8080/api/v1/status/health
+```
+
+### System Metrics
+
+```bash
+curl http://localhost:8080/api/v1/status/metrics
+```
+
+### Actuator Health (Detailed)
+
+```bash
 curl http://localhost:8080/actuator/health
 ```
 
@@ -170,6 +266,108 @@ curl http://localhost:8080/actuator/health
 ```bash
 curl http://localhost:8080/actuator/prometheus
 ```
+
+## 🌐 Alternative Testing Methods
+
+### 1. Swagger UI (Easiest)
+1. Open browser → `http://localhost:8080/swagger-ui.html`
+2. Find **Event Management** → **POST /api/v1/events**
+3. Click **"Try it out"**
+4. Enter JSON and click **"Execute"**
+
+### 2. Postman
+- **Method**: POST
+- **URL**: `http://localhost:8080/api/v1/events`
+- **Headers**: `Content-Type: application/json`
+- **Body**: Raw JSON
+
+### 3. PowerShell Script (Windows)
+Create `test-notifications.ps1`:
+```powershell
+# Test the notification system
+$baseUrl = "http://localhost:8080"
+
+# Health check
+Invoke-RestMethod -Uri "$baseUrl/api/v1/health"
+
+# Send event
+$event = @{
+    eventType = "USER_REGISTERED"
+    recipient = "siraj.shaik@outlook.com"
+    payload = @{ name = "Siraj Shaik"; company = "MultiBank" }
+} | ConvertTo-Json
+
+Invoke-RestMethod -Uri "$baseUrl/api/v1/events" -Method Post -ContentType "application/json" -Body $event
+```
+
+## 🎯 Event Types & Examples
+
+### User Registration
+
+**JSON:**
+```json
+{
+  "eventType": "USER_REGISTERED",
+  "recipient": "siraj@multibank.com",
+  "payload": {
+    "name": "Siraj Shaik",
+    "userId": "SH001",
+    "department": "Technology",
+    "location": "Dubai"
+  }
+}
+```
+
+**Windows curl:**
+```cmd
+curl -X POST http://localhost:8080/api/v1/events -H "Content-Type: application/json" -d "{\"eventType\":\"USER_REGISTERED\",\"recipient\":\"user@example.com\",\"payload\":{\"name\":\"John Doe\",\"userId\":\"12345\"}}"
+```
+
+**Triggers**: Email + SMS notifications
+
+### Payment Completed
+
+**JSON:**
+```json
+{
+  "eventType": "PAYMENT_COMPLETED",
+  "recipient": "customer@example.com",
+  "payload": {
+    "amount": "99.99",
+    "orderId": "ORDER-123",
+    "transactionId": "TXN-456"
+  }
+}
+```
+
+**Windows curl:**
+```cmd
+curl -X POST http://localhost:8080/api/v1/events -H "Content-Type: application/json" -d "{\"eventType\":\"PAYMENT_COMPLETED\",\"recipient\":\"customer@example.com\",\"payload\":{\"amount\":\"99.99\",\"orderId\":\"ORDER-123\"}}"
+```
+
+**Triggers**: Email + SMS notifications
+
+### Security Alert
+
+**JSON:**
+```json
+{
+  "eventType": "SECURITY_ALERT",
+  "recipient": "user@example.com",
+  "priority": "HIGH",
+  "payload": {
+    "alertType": "Suspicious login attempt",
+    "ipAddress": "192.168.1.100"
+  }
+}
+```
+
+**Windows curl:**
+```cmd
+curl -X POST http://localhost:8080/api/v1/events -H "Content-Type: application/json" -d "{\"eventType\":\"SECURITY_ALERT\",\"recipient\":\"admin@example.com\",\"priority\":\"HIGH\",\"payload\":{\"alertType\":\"Suspicious login\"}}"
+```
+
+**Triggers**: Email + SMS notifications (High priority gets immediate delivery)
 
 ## 🔧 Configuration
 
@@ -196,53 +394,12 @@ notification:
 The system comes with pre-configured routing rules:
 
 1. **User Registration**: Email + SMS
-2. **Payment Completed**: Email + Push
-3. **High Priority Events**: Push + SMS
-4. **Report Generated**: Email + Webhook
-5. **Security Alerts**: Email + SMS + Push
-
-## 🎯 Event Types & Examples
-
-### User Registration
-
-```json
-{
-  "eventType": "USER_REGISTERED",
-  "recipient": "user@example.com",
-  "payload": {
-    "name": "John Doe"
-  }
-}
-```
-**Triggers**: Email + SMS notifications
-
-### Payment Completed
-
-```json
-{
-  "eventType": "PAYMENT_COMPLETED",
-  "recipient": "customer@example.com",
-  "payload": {
-    "amount": "99.99",
-    "orderId": "ORDER-123"
-  }
-}
-```
-**Triggers**: Email + Push notifications
-
-### Security Alert
-
-```json
-{
-  "eventType": "SECURITY_ALERT",
-  "recipient": "user@example.com",
-  "priority": "HIGH",
-  "payload": {
-    "alertType": "Suspicious login attempt"
-  }
-}
-```
-**Triggers**: Email + SMS + Push notifications
+2. **Payment Completed**: Email + SMS
+3. **High Priority Events**: SMS + Email (priority-based)
+4. **Security Alerts**: Email + SMS
+5. **Password Reset**: Email only
+6. **Account Verification**: Email + SMS
+7. **Low Priority Updates**: Email only
 
 ## 🔄 Retry Mechanism
 
@@ -255,15 +412,28 @@ The system comes with pre-configured routing rules:
 
 ## 📊 Monitoring & Observability
 
-### Health Endpoint
+### Health Endpoint Response
 
 ```json
 {
-  "status": "healthy",
-  "eventsProcessed": 1245,
-  "notificationsSent": 3621,
-  "deadLetterCount": 12,
-  "timestamp": 1672531200000
+  "service": {
+    "status": "healthy",
+    "channelsAvailable": 2,
+    "routingRulesActive": 8,
+    "storageType": "InMemoryNotificationStorage"
+  },
+  "channels": {
+    "EMAIL": "Email service ready - SMTP connected",
+    "SMS": "SMS gateway connected - Ready to send"
+  },
+  "statistics": {
+    "eventsProcessed": 1245,
+    "notificationsSent": 3621,
+    "failedDeliveries": 45,
+    "deadLetterCount": 12,
+    "availableChannels": ["EMAIL", "SMS"],
+    "routingRules": 8
+  }
 }
 ```
 
@@ -277,28 +447,28 @@ The system comes with pre-configured routing rules:
   "status": "SENT",
   "retryCount": 0,
   "createdAt": "2023-12-31T10:30:00",
-  "lastAttemptAt": "2023-12-31T10:30:15"
+  "lastAttemptAt": "2023-12-31T10:30:15",
+  "failureReason": null,
+  "retryAttempts": []
 }
 ```
 
 ## 🧪 Testing
 
-### Run Unit Tests
+### Run Tests
 
+**Linux/Mac:**
 ```bash
-mvn test
+./mvnw test                           # All tests
+./mvnw test -Dtest=*IntegrationTest   # Integration tests only
+./mvnw test jacoco:report             # With coverage
 ```
 
-### Run Integration Tests
-
-```bash
-mvn test -Dtest=*IntegrationTest
-```
-
-### Test Coverage
-
-```bash
-mvn test jacoco:report
+**Windows:**
+```cmd
+mvnw.cmd test                           # All tests
+mvnw.cmd test -Dtest=*IntegrationTest   # Integration tests only  
+mvnw.cmd test jacoco:report             # With coverage
 ```
 
 View coverage report: `target/site/jacoco/index.html`
@@ -338,46 +508,45 @@ public enum NotificationChannel {
 ### Adding Custom Routing Rules
 
 ```java
-routingEngine.addRule(RoutingRule.builder()
-    .name("VIP Customer Alert")
-    .condition(event -> 
-        "ORDER_PLACED".equals(event.getEventType()) &&
-        "VIP".equals(event.getPayload().get("customerTier"))
-    )
-    .channels(Arrays.asList(NotificationChannel.EMAIL, NotificationChannel.PUSH))
-    .messageTemplate("VIP order placed: ${orderId}")
-    .priority(5)
-    .build());
+routingEngine.addRule(RoutingRule.create(
+    "VIP Customer Alert",
+    event -> "ORDER_PLACED".equals(event.eventType()) &&
+             "VIP".equals(event.payload().get("customerTier")),
+    List.of(NotificationChannel.EMAIL, NotificationChannel.PUSH),
+    "VIP order placed: ${orderId}",
+    "VIP Order Alert",
+    5
+));
 ```
 
 ## 🏗️ Design Decisions & Trade-offs
 
 ### Architecture Choices
 
-1. **In-Memory Storage**: 
-   - **Pros**: Fast, simple, no external dependencies
-   - **Cons**: Data lost on restart, not suitable for production scale
-   - **Alternative**: Replace with JPA/Hibernate + PostgreSQL/MySQL
+1. **In-Memory Storage**:
+    - **Pros**: Fast, simple, no external dependencies
+    - **Cons**: Data lost on restart, not suitable for production scale
+    - **Alternative**: Replace with JPA/Hibernate + PostgreSQL/MySQL
 
-2. **Async Processing**: 
-   - **Pros**: Non-blocking, better throughput
-   - **Cons**: Eventual consistency, harder to debug
-   - **Implementation**: Spring's `@Async` with thread pools
+2. **Async Processing**:
+    - **Pros**: Non-blocking, better throughput
+    - **Cons**: Eventual consistency, harder to debug
+    - **Implementation**: Spring's `@Async` with thread pools
 
-3. **Rule-Based Routing**: 
-   - **Pros**: Flexible, configurable, extensible
-   - **Cons**: Complex rules can impact performance
-   - **Alternative**: Event-driven architecture with message queues
+3. **Rule-Based Routing**:
+    - **Pros**: Flexible, configurable, extensible
+    - **Cons**: Complex rules can impact performance
+    - **Alternative**: Event-driven architecture with message queues
 
-4. **Exponential Backoff**: 
-   - **Pros**: Handles transient failures gracefully
-   - **Cons**: Can delay urgent notifications
-   - **Enhancement**: Priority-based retry schedules
+4. **Exponential Backoff**:
+    - **Pros**: Handles transient failures gracefully
+    - **Cons**: Can delay urgent notifications
+    - **Enhancement**: Priority-based retry schedules
 
 ### Assumptions Made
 
 1. **Event Ordering**: Events can be processed out of order
-2. **Channel Failures**: Simulated with random failure rates
+2. **Channel Failures**: Simulated with random failure rates (10% email, 15% SMS)
 3. **Message Templates**: Simple placeholder replacement
 4. **Authentication**: Not implemented (would use JWT/OAuth2)
 5. **Rate Limiting**: Not implemented (would use Redis/Bucket4j)
@@ -453,10 +622,30 @@ public class EventController {
 - [ ] Distributed tracing (Zipkin/Jaeger)
 - [ ] Container deployment (Docker/Kubernetes)
 
-## 🤝 Contributing
+## 💭 My Approach & Design Decisions
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+### Why I Built It This Way
+
+1. **Java 21**: I wanted to demonstrate my knowledge of the latest Java features. Used Records for immutable data models and virtual threads for better concurrency.
+
+2. **Spring Boot 3.3**: Chose the latest stable version to show I stay current with technology. Used dependency injection effectively and leveraged Spring's async capabilities.
+
+3. **Architecture**: Implemented clean architecture principles with clear separation between controllers, services, and data layers. Made the system extensible by using interfaces for channels and storage.
+
+4. **Testing**: Created comprehensive test coverage (85+ test cases) including unit tests and integration tests. Used realistic failure scenarios to test system resilience.
+
+### What I'm Proud Of
+
+- **Async Processing**: Implemented proper non-blocking event processing
+- **Failure Handling**: Built realistic failure simulation and retry mechanisms  
+- **Code Quality**: Clean, readable code with proper error handling and logging
+- **Modern Java**: Leveraged Java 21 features effectively (Records, Pattern Matching, Virtual Threads)
+- **Test Coverage**: Comprehensive testing with realistic scenarios
+
+### What I'd Improve Given More Time
+
+- Add database persistence (PostgreSQL)
+- Implement proper authentication and authorization
+- Add message queue integration (RabbitMQ)
+- Create Docker containerization
+- Add more sophisticated routing rules
