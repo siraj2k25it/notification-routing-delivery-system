@@ -13,6 +13,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -211,6 +213,85 @@ class NotificationServiceTest {
 
         // Then
         assertNull(result);
+    }
+
+    @Test
+    void testGetAllDeliveryStatuses_MultipleChannels() {
+        // Given - HIGH priority event with multiple channels
+        String eventId = "multi-channel-event";
+        Event highPriorityEvent = new Event(eventId, "CRITICAL_ALERT", 
+                Map.of("message", "System overload"), "admin@example.com",
+                LocalDateTime.now(), Event.Priority.HIGH);
+        
+        NotificationRequest pushRequest = NotificationRequest.create(
+                eventId, NotificationChannel.PUSH, "device-token-123", 
+                "Urgent Alert", "System overload detected", Event.Priority.HIGH)
+                .withStatus(NotificationStatus.SENT);
+        
+        NotificationRequest emailRequest = NotificationRequest.create(
+                eventId, NotificationChannel.EMAIL, "admin@example.com", 
+                "Urgent Alert", "System overload detected", Event.Priority.HIGH)
+                .withStatus(NotificationStatus.SENT);
+        
+        NotificationRequest smsRequest = NotificationRequest.create(
+                eventId, NotificationChannel.SMS, "+971-50-789-4567", 
+                "Urgent Alert", "System overload detected", Event.Priority.HIGH)
+                .withStatus(NotificationStatus.SENT);
+
+        when(storage.getEvent(eventId)).thenReturn(highPriorityEvent);
+        when(storage.getNotificationRequestsByEventId(eventId))
+                .thenReturn(List.of(pushRequest, emailRequest, smsRequest));
+
+        // When
+        List<DeliveryStatus> results = notificationService.getAllDeliveryStatuses(eventId);
+
+        // Then
+        assertNotNull(results);
+        assertEquals(3, results.size(), "Should return status for all 3 channels");
+        
+        // Verify all channels are present
+        Set<NotificationChannel> channels = results.stream()
+                .map(DeliveryStatus::channel)
+                .collect(Collectors.toSet());
+        
+        assertTrue(channels.contains(NotificationChannel.PUSH), "Should include PUSH channel");
+        assertTrue(channels.contains(NotificationChannel.EMAIL), "Should include EMAIL channel");
+        assertTrue(channels.contains(NotificationChannel.SMS), "Should include SMS channel");
+        
+        // Verify all are marked as sent
+        assertTrue(results.stream().allMatch(status -> 
+                NotificationStatus.SENT.equals(status.status())), 
+                "All notifications should be marked as SENT");
+    }
+
+    @Test
+    void testGetAllDeliveryStatuses_EventNotFound() {
+        // Given
+        String nonExistentEventId = "non-existent";
+        when(storage.getEvent(nonExistentEventId)).thenReturn(null);
+
+        // When
+        List<DeliveryStatus> results = notificationService.getAllDeliveryStatuses(nonExistentEventId);
+
+        // Then
+        assertNotNull(results);
+        assertTrue(results.isEmpty(), "Should return empty list for non-existent event");
+    }
+
+    @Test
+    void testGetAllDeliveryStatuses_NoRequests() {
+        // Given
+        String eventId = "event-no-requests";
+        Event event = new Event(eventId, "TEST_EVENT", Map.of(), "user@example.com", LocalDateTime.now(), Event.Priority.MEDIUM);
+        when(storage.getEvent(eventId)).thenReturn(event);
+        when(storage.getNotificationRequestsByEventId(eventId)).thenReturn(List.of());
+
+        // When
+        List<DeliveryStatus> results = notificationService.getAllDeliveryStatuses(eventId);
+
+        // Then
+        assertNotNull(results);
+        assertTrue(results.isEmpty(), "Should return empty list when no requests exist");
     }
 
     @Test

@@ -163,6 +163,19 @@ Once running, visit:
 
 ## 📖 API Usage
 
+### 🔗 Available Endpoints
+
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/api/v1/events` | POST | Submit notification events |
+| `/api/v1/status/delivery/{eventId}` | GET | Check single delivery status |
+| `/api/v1/status/delivery/{eventId}/all` | GET | **NEW**: Check ALL delivery statuses (all channels) |
+| `/api/v1/status/failed` | GET | View all failed deliveries |
+| `/api/v1/status/health` | GET | System health check |
+| `/api/v1/status/metrics` | GET | System metrics |
+| `/swagger-ui.html` | GET | API documentation |
+| `/actuator/health` | GET | Spring Boot health |
+
 ### Basic Health Check
 
 **Linux/Mac/Windows:**
@@ -236,6 +249,43 @@ curl -X POST http://localhost:8080/api/v1/events -H "Content-Type: application/j
 ```bash
 curl http://localhost:8080/api/v1/status/delivery/{eventId}
 ```
+
+### Check All Delivery Statuses (All Channels)
+
+**NEW FEATURE**: View delivery status for ALL notification channels for a specific event:
+
+```bash
+curl http://localhost:8080/api/v1/status/delivery/{eventId}/all
+```
+
+**Example for HIGH priority event (shows PUSH + SMS + EMAIL):**
+```bash
+curl http://localhost:8080/api/v1/status/delivery/8fa65669-71aa-4d31-a5ab-bc0479e04e35/all
+```
+
+**Sample Response:**
+```json
+[
+  {
+    "eventId": "8fa65669-71aa-4d31-a5ab-bc0479e04e35",
+    "channel": "SMS",
+    "status": "SENT"
+  },
+  {
+    "eventId": "8fa65669-71aa-4d31-a5ab-bc0479e04e35", 
+    "channel": "PUSH",
+    "status": "SENT"
+  },
+  {
+    "eventId": "8fa65669-71aa-4d31-a5ab-bc0479e04e35",
+    "channel": "EMAIL", 
+    "status": "FAILED",
+    "failureReason": "Connection timeout to email server"
+  }
+]
+```
+
+This endpoint demonstrates the **HIGH priority → PUSH notification** requirement in action!
 
 ### View Failed Deliveries
 

@@ -45,6 +45,21 @@ public class StatusController {
         return ResponseEntity.ok(status);
     }
 
+    @GetMapping("/delivery/{eventId}/all")
+    @Operation(summary = "Get all delivery statuses", description = "Get all delivery statuses for a specific event (all channels)")
+    @ApiResponse(responseCode = "200", description = "Delivery statuses found")
+    @ApiResponse(responseCode = "404", description = "Event not found")
+    public ResponseEntity<List<DeliveryStatus>> getAllDeliveryStatuses(@PathVariable String eventId) {
+        log.debug("🔍 Getting all delivery statuses for event: {}", eventId);
+
+        List<DeliveryStatus> statuses = notificationService.getAllDeliveryStatuses(eventId);
+        if (statuses.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(statuses);
+    }
+
     @GetMapping("/failed")
     @Operation(summary = "Get failed deliveries", description = "Get all failed notification deliveries")
     public ResponseEntity<List<DeliveryStatus>> getFailedDeliveries() {

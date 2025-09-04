@@ -146,6 +146,21 @@ public class NotificationService {
     }
 
     /**
+     * Get all delivery statuses for a specific event (all channels).
+     */
+    public List<DeliveryStatus> getAllDeliveryStatuses(String eventId) {
+        Event event = storage.getEvent(eventId);
+        if (event == null) {
+            return List.of();
+        }
+
+        List<NotificationRequest> requests = storage.getNotificationRequestsByEventId(eventId);
+        return requests.stream()
+                .map(request -> DeliveryStatus.fromRequest(request, List.of()))
+                .toList();
+    }
+
+    /**
      * Get all failed deliveries.
      */
     public List<DeliveryStatus> getFailedDeliveries() {
